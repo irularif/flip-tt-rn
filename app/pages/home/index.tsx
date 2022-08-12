@@ -1,6 +1,6 @@
 import { StyleSheet, Text } from "react-native";
-import Page from "../../components/Page";
-import TopBar, { topBarStyles } from "../../components/TopBar";
+import Page from "@app/components/Page";
+import TopBar, { topBarStyles } from "@app/components/TopBar";
 
 const HomePage = () => {
   const finalTitleStyle = StyleSheet.flatten([topBarStyles.title]);

@@ -1,5 +1,5 @@
 import { NavigationContainer } from "@react-navigation/native";
-import Pages from "./pages";
+import Pages from "@app/pages";
 
 export default function App() {
   return (
