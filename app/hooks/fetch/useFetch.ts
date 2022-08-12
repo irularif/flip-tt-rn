@@ -1,19 +1,25 @@
 import { useCallback, useEffect, useMemo, useReducer } from "react";
-import reducer, { ActionTypes } from "./reducer";
+import reducer, { ActionTypes, IAction, IState } from "./reducer";
 import Constants from "expo-constants";
 
 const env = Constants.manifest?.extra;
 
 interface FetchOptions extends RequestInit {
   url: string;
-  calback?: (data: any, error?: unknown) => any;
+  calback?: (oldData: any, newData: any, error?: unknown) => any;
 }
 
-const useFetch = <T = unknown>(
+interface IFetch<T> extends IState<T> {
+  fetch: () => void;
+}
+
+const useFetch = <T = undefined>(
   initialData: T,
   { url, calback, ...options }: FetchOptions
-) => {
-  const [state, dispatch] = useReducer(reducer, {
+): IFetch<T> => {
+  const [state, dispatch] = useReducer<
+    (state: IState<T>, action: IAction) => IState<T>
+  >(reducer, {
     isLoading: false,
     isError: false,
     data: initialData,
@@ -37,11 +43,11 @@ const useFetch = <T = unknown>(
     [options]
   );
 
-  const fetchData = async () => {
-    let abortController: any = new AbortController();
+  const fetchData = useCallback(() => {
+    let fetchController: any = new AbortController();
     dispatch({
       type: ActionTypes.UPDATE,
-      payload: { isLoading: true, abortController },
+      payload: { isLoading: true, fetchController },
     });
     let _url = "";
     if (!!env?.apiUrl && !url.startsWith("http")) {
@@ -50,14 +56,14 @@ const useFetch = <T = unknown>(
     _url += url;
     try {
       fetch(_url, {
-        signal: abortController.signal,
+        signal: fetchController.signal,
         ..._options,
       })
         .then((response) => response.json())
         .then((data) => {
           let _data = data;
           if (!!calback) {
-            const res = calback(data);
+            const res = calback(state.data, data);
             if (!!res) {
               _data = res;
             }
@@ -65,22 +71,22 @@ const useFetch = <T = unknown>(
           dispatch({
             type: ActionTypes.UPDATE,
             payload: {
-              abortController: null,
+              fetchController: null,
               data: _data,
               isLoading: false,
               isError: false,
             },
           });
-          abortController = null;
+          fetchController = null;
         })
         .catch((error) => {
           if (!!calback) {
-            calback(undefined, error);
+            calback(state.data, undefined, error);
           }
           dispatch({
             type: ActionTypes.UPDATE,
             payload: {
-              abortController: null,
+              fetchController: null,
               error,
               isLoading: false,
               isError: true,
@@ -88,15 +94,15 @@ const useFetch = <T = unknown>(
           });
         });
       setTimeout(() => {
-        if (!!abortController) {
-          abortController.abort();
+        if (!!fetchController) {
+          fetchController.abort();
         }
       }, 3 * 60 * 1000);
     } catch (error) {
       dispatch({
         type: ActionTypes.UPDATE,
         payload: {
-          abortController: null,
+          fetchController: null,
           isError: true,
           isLoading: false,
           error,
@@ -106,11 +112,11 @@ const useFetch = <T = unknown>(
         calback(undefined, error);
       }
     }
-  };
+  }, [url, _options, state, calback]);
 
   const abortFetch = useCallback(() => {
-    if (!!state.abortController) {
-      state.abortController.abort();
+    if (!!state.fetchController) {
+      state.fetchController.abort();
     }
   }, [state]);
 

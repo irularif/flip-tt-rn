@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "@assets/colors";
-import { getStyleValue } from "@app/utils/styles";
+import { getStyleValue } from "@app/helpers/styles";
 
 export interface TopBarProps extends ViewProps {
   statusBarProps?: StatusBarProps;

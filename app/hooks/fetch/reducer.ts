@@ -1,7 +1,7 @@
 export enum ActionTypes {
   UPDATE,
 }
-interface IState<T> {
+export interface IState<T = undefined> {
   isLoading: boolean;
   isError: boolean;
   data: T;
@@ -14,7 +14,7 @@ export interface IAction {
   payload?: any;
 }
 
-const reducer = <T extends unknown>(state: IState<T>, action: IAction) => {
+const reducer = <T>(state: IState<T>, action: IAction) => {
   switch (action.type) {
     case ActionTypes.UPDATE:
       return {
