@@ -3,7 +3,7 @@ import TopBar, { topBarStyles } from "@app/components/TopBar";
 import { merge } from "@app/helpers";
 import useFetch from "@app/hooks/fetch/useFetch";
 import { FlashList } from "@shopify/flash-list";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RefreshControl, StyleSheet, Text, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { ITransaction } from "types/data";
@@ -18,6 +18,7 @@ const HomePage = () => {
   const [sortBy] = sortState;
   const [search] = searchState;
   const inset = useSafeAreaInsets();
+  const listRef = useRef<FlashList<ITransaction> | null>(null);
 
   // fetch data from api with custom hook
   const { isLoading, data, fetch } = useFetch<Array<ITransaction>>([], {
@@ -125,6 +126,7 @@ const HomePage = () => {
       />
       {/* Use FlashList from @shopify for better performance than FlatList */}
       <FlashList
+        ref={listRef}
         // add refresh control to refresh data from api
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={init} />
@@ -148,7 +150,11 @@ const HomePage = () => {
         }
       />
       {/* Modal view for sorting options */}
-      <ModalSort modalState={modalState} sortState={sortState} />
+      <ModalSort
+        modalState={modalState}
+        sortState={sortState}
+        listRef={listRef}
+      />
     </Page>
   );
 };

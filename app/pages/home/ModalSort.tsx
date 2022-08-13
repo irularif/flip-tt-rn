@@ -9,13 +9,21 @@ import {
   View,
 } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { FlashList } from "@shopify/flash-list";
+import { ITransaction } from "types/data";
 
 interface ModalSortProps extends ModalProps {
   modalState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
   sortState: [string, React.Dispatch<React.SetStateAction<string>>];
+  listRef: React.MutableRefObject<FlashList<ITransaction> | null>;
 }
 
-const ModalSort = ({ modalState, sortState, ...props }: ModalSortProps) => {
+const ModalSort = ({
+  modalState,
+  sortState,
+  listRef,
+  ...props
+}: ModalSortProps) => {
   const [visibleModal, setVisibleModal] = modalState;
   const [sortBy, setSortBy] = sortState;
 
@@ -41,6 +49,10 @@ const ModalSort = ({ modalState, sortState, ...props }: ModalSortProps) => {
               onPress={() => {
                 setSortBy(value);
                 setVisibleModal(false);
+                listRef.current?.scrollToIndex({
+                  index: 0,
+                  animated: true,
+                });
               }}
             >
               <Ionicons
