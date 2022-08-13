@@ -5,11 +5,16 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import colors from "@assets/colors";
 import { useMemo } from "react";
 import { dateFormat, moneyFormat } from "@app/helpers/format";
+import { useNavigation } from "@react-navigation/native";
 
 interface ItemProps {
   item: ITransaction;
 }
 const Item = ({ item }: ItemProps) => {
+  const { navigate } = useNavigation();
+  const openDetail = () => {
+    navigate("Detail" as never, item as never);
+  };
   // get color based on transaction status
   const statusColor = useMemo(() => {
     switch (item.status) {
@@ -41,7 +46,6 @@ const Item = ({ item }: ItemProps) => {
       borderLeftColor: statusColor,
     },
   ]);
-
   const titleStyle = StyleSheet.flatten([styles.title, styles.spaces]);
   const finalSenderStyle = StyleSheet.flatten([
     titleStyle,
@@ -74,7 +78,7 @@ const Item = ({ item }: ItemProps) => {
   ]);
 
   return (
-    <TouchableOpacity style={finalContainerStyle}>
+    <TouchableOpacity style={finalContainerStyle} onPress={openDetail}>
       <View style={styles.wrapper}>
         <Text>
           <Text style={finalSenderStyle}>{item.sender_bank}</Text>{" "}

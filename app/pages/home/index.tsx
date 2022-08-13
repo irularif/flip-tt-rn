@@ -112,12 +112,11 @@ const HomePage = () => {
       paddingBottom: inset.bottom + 8,
     },
   ]);
-  const finalTitleStyle = StyleSheet.flatten([topBarStyles.title]);
 
   return (
     <Page>
       <TopBar>
-        <Text style={finalTitleStyle}>History Transaction</Text>
+        <Text style={topBarStyles.title}>History Transaction</Text>
       </TopBar>
       <Filter
         modalState={modalState}
