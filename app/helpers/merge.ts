@@ -1,4 +1,4 @@
-const merge = (
+export const merge = (
   array1: Array<any> = [],
   array2: Array<any> = [],
   calback?: (array: Array<any>) => Array<any>
@@ -12,5 +12,3 @@ const merge = (
   }
   return newArray;
 };
-
-export default merge;

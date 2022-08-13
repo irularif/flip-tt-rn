@@ -9,7 +9,7 @@ import {
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { useCallback, useMemo, useState } from "react";
 import { sortOptions } from "@app/data/sort";
-import debounce from "@app/helpers/debounce";
+import { debounce } from "@app/helpers";
 
 interface FilterProps {
   modalState: [boolean, React.Dispatch<React.SetStateAction<boolean>>];
@@ -23,6 +23,10 @@ const Filter = ({ modalState, sortState, searchState }: FilterProps) => {
   const [_, setVisibleModal] = modalState;
   const [sortBy] = sortState;
 
+  // get sort label from sort options
+  // if sortBy is not found in sort options, return empty string
+  // this is to prevent error when sortBy is not found in sort options
+  // we use useMemo to cache the result and re-render only when sortBy is changed
   const sort = useMemo(() => {
     const _sort = sortOptions.find((x) => x.value === sortBy);
     if (!!_sort) {
@@ -31,13 +35,18 @@ const Filter = ({ modalState, sortState, searchState }: FilterProps) => {
     return "";
   }, [sortBy]);
 
+  // this is to prevent from firing event when user is typing
+  // we don't want to filter data everytime user is typing
+  // because it will make the app performance worse
   const onSearch = useCallback(
     debounce((value: string) => {
       setSearch(value);
-    }, 500),
+    }, 300),
     []
   );
 
+  // we use local state to update search keyword
+  // and then fire onSearch function to filter data
   const onChangeText = useCallback((value: string) => {
     setKeyword(value);
     onSearch(value);
@@ -70,8 +79,7 @@ const styles = StyleSheet.create({
     padding: 4,
     backgroundColor: colors.white,
     flexDirection: "row",
-    marginHorizontal: 8,
-    marginBottom: 8,
+    margin: 8,
     alignItems: "center",
   },
   input: {

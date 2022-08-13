@@ -1,4 +1,4 @@
-const debounce = (func: Function, timeout: number = 300) => {
+export const debounce = (func: Function, timeout: number = 300) => {
   let timer: any = undefined;
   return (...args: any) => {
     clearTimeout(timer);
@@ -7,5 +7,3 @@ const debounce = (func: Function, timeout: number = 300) => {
     }, timeout);
   };
 };
-
-export default debounce;

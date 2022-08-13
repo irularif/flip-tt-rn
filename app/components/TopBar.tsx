@@ -7,13 +7,14 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import colors from "@assets/colors";
-import { getStyleValue } from "@app/helpers/styles";
+import { getStyleValue } from "@app/helpers";
 
 export interface TopBarProps extends ViewProps {
   statusBarProps?: StatusBarProps;
 }
 
 const TopBar = ({ statusBarProps, children, style, ...props }: TopBarProps) => {
+  // add padding top for notch with safe area insets
   const inset = useSafeAreaInsets();
   const finalTopBarStyle = StyleSheet.flatten([
     styles.container,
@@ -27,7 +28,12 @@ const TopBar = ({ statusBarProps, children, style, ...props }: TopBarProps) => {
 
   return (
     <View {...props} style={finalTopBarStyle}>
-      <StatusBar barStyle="light-content" {...statusBarProps} />
+      <StatusBar
+        backgroundColor="transparent"
+        translucent={true}
+        barStyle="light-content"
+        {...statusBarProps}
+      />
       {children}
     </View>
   );

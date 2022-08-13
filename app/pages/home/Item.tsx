@@ -10,6 +10,7 @@ interface ItemProps {
   item: ITransaction;
 }
 const Item = ({ item }: ItemProps) => {
+  // get color based on transaction status
   const statusColor = useMemo(() => {
     switch (item.status) {
       case "SUCCESS":
@@ -19,6 +20,7 @@ const Item = ({ item }: ItemProps) => {
     }
   }, [item]);
 
+  // get custom status label
   const status = useMemo(() => {
     switch (item.status) {
       case "SUCCESS":
@@ -28,16 +30,17 @@ const Item = ({ item }: ItemProps) => {
     }
   }, [item]);
 
+  // get and formatted date with dateFormat helper
+  const date = useMemo(() => {
+    return dateFormat(item.created_at.split(" ")[0]);
+  }, [item]);
+
   const finalContainerStyle = StyleSheet.flatten([
     styles.container,
     {
       borderLeftColor: statusColor,
     },
   ]);
-
-  const date = useMemo(() => {
-    return dateFormat(item.created_at.split(" ")[0]);
-  }, [item]);
 
   const titleStyle = StyleSheet.flatten([styles.title, styles.spaces]);
   const finalSenderStyle = StyleSheet.flatten([
