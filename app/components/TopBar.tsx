@@ -16,13 +16,16 @@ export interface TopBarProps extends ViewProps {
 const TopBar = ({ statusBarProps, children, style, ...props }: TopBarProps) => {
   // add padding top for notch with safe area insets
   const inset = useSafeAreaInsets();
+  const topbarStyle = StyleSheet.flatten([styles.container, style]);
   const finalTopBarStyle = StyleSheet.flatten([
-    styles.container,
-    style,
+    topbarStyle,
     {
       paddingTop:
-        getStyleValue(style, ["padding", "paddingVertical", "paddingTop"], 0) +
-        inset.top,
+        getStyleValue(
+          topbarStyle,
+          ["padding", "paddingVertical", "paddingTop"],
+          0
+        ) + inset.top,
     },
   ]);
 
