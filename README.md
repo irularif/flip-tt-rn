@@ -1,4 +1,4 @@
-# Flip Technical Test React Native
+# Flip React Native Technical Test
 
 Approaches to get a better app performance in the MR / PR.
 
